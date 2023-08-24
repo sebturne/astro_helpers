@@ -1,5 +1,5 @@
 # astro_highlights
-Just a small collection of scripts and functions I wrote during my time as an astrophysicist.
+Just a small collection of scripts and functions I wrote during my time as an astrophysicist. See my stacopy repo for further astro work.
 
 ___
 
@@ -32,4 +32,6 @@ Plots/mstar_smdust_ssfr_hlr_bt_tln_corner_k7.png is an example of a plot created
 
 ___
 
-See my stacopy repo for further astro work.
+`cluster_feat_imp.py` determines the importance of each of a series of features to a clustering outcome via mutual information.
+
+Plots/feat_imp.png is an example of a plot created using this script (featuring two datasets instead of just one).
