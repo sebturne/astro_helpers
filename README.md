@@ -24,11 +24,11 @@ Plots/mstar_smdust_ssfr_hlr_bt_tln_k7_04.png is an example of a plot created usi
 
 ___
 
-`cluster_plane_corner_plot.py` is a script to plot all of the 2D projections of clustering outcomes determined in a 5D dataset. This is called a "corner plot", or an "everything vs. everything" plot.
+`cluster_pair_plot.py` is a pedagogical script I wrote to explain how to make a "pair plot" (AKA "corner plot" or "everything vs. everything plot"). The plot projects an input dataset and clusters determined within it onto every possible features. The intent is to identify projections within which clusters are well-separated and, consequentially, features that were important to the clustering. 
 
-Clusters are plotted in each panel as a single coloured contour at 33% density, determined using a grid search for a best-fitting kernel density estimate in that panel.
+Clusters are plotted in each panel as a single coloured contour, determined using a grid search for a best-fitting kernel density estimate in that panel.
 
-Plots/mstar_smdust_ssfr_hlr_bt_tln_corner_k7.png is an example of a plot created using this script.
+Plots/mstar_smdust_ssfr_hlr_bt_tln_corner_k7.png is an example of a plot created using a script like this.
 
 ___
 
