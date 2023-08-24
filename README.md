@@ -35,3 +35,7 @@ ___
 `cluster_feat_imp.py` determines the importance of each of a series of features to a clustering outcome via mutual information.
 
 Plots/feat_imp.png is an example of a plot created using this script (featuring two datasets instead of just one).
+
+___
+
+`stamp_collector.py` collects images ("postage stamps" because they're small and square) of galaxies. It gets images of the 64 most representative galaxies in each cluster. It does this by conducting a k-nearest neighbours search in the 5D input feature space. It then goes and gets the images from the EAGLE public database, where they're stored.
