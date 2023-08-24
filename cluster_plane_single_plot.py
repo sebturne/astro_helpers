@@ -29,7 +29,7 @@ col = ['#ee7722','#975a09','#ee3333','#66aa55','#992288','#9370db','#3366aa'][::
 leg = [M.patches.Patch(color = col[i], label = cnm[i]) for i in range(k)]
 
 cnm = ['E' + str(i) for i in range (7,0,-1)][::-1] # cluster names
-cod = H.FS(data[:,2], clst[:,0])[::-1] # sorting clusters by mstar (stellar mass)
+cod = H.FS(data[:,2], clst[:,0])[::-1] # sorting clusters by ssfr
 
 kde = N.zeros((25,25,k))
 
