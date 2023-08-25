@@ -39,3 +39,7 @@ Plots/feat_imp.png is an example of a plot created using this script (featuring 
 ___
 
 `stamp_collector.py` collects images ("postage stamps" because they're small and square) of galaxies. It gets images of the 64 most representative galaxies in each cluster. It does this by conducting a k-nearest neighbours search in the 5D input feature space. It then goes and gets the images from the EAGLE public database, where they're stored.
+
+___
+
+`hierarchy_plot.py` is a script that generates a (very rudimentary!) Sankey diagram from scratch, to compare relationships between clustering outcomes consisting of different numbers of clusters. Description TBC...
