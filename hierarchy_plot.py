@@ -1,21 +1,21 @@
-import gama_functions as G
-import numpy as N
-import matplotlib as M
-M.use('Agg')
-import matplotlib.pyplot as MP
-import sklearn.metrics as SM
+import astro_helpers
+import numpy
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot
+import sklearn.metrics
 
-MP.rcParams.update({'figure.figsize':[4,4], 'figure.dpi': 300, 'font.family': 'Times New Roman', 'font.size': 10, 'text.usetex': True})
+matplotlib.pyplot.rcParams.update({'figure.figsize':[4,4], 'figure.dpi': 300, 'font.family': 'Times New Roman', 'font.size': 10, 'text.usetex': True})
 
 feat_set = 'mstar_n_ssfr_sig5'
 k = [2,3,6,9]
 
-zscr = N.genfromtxt('Pre/' + feat_set + '_tlz.txt', delimiter = ',')
-lbls = N.genfromtxt('../../Data/Clustering2/' + feat_set + '_tlz_lbls_k%i.txt' % k[0], delimiter = ',')
-phi  = N.genfromtxt('../../Data/Clustering2/' + feat_set + '_tlz_staco.txt', delimiter = ',')[:,1:]
+zscr = numpy.genfromtxt('Pre/' + feat_set + '_tlz.txt', delimiter = ',')
+lbls = numpy.genfromtxt('../../Data/Clustering2/' + feat_set + '_tlz_lbls_k%i.txt' % k[0], delimiter = ',')
+phi  = numpy.genfromtxt('../../Data/Clustering2/' + feat_set + '_tlz_staco.txt', delimiter = ',')[:,1:]
 phi  = phi[phi[:,1] == k[0],:]
 
-best = N.where(phi[:,0] == min(phi[:,0]))[0][0]
+best = numpy.where(phi[:,0] == min(phi[:,0]))[0][0]
 clst = lbls[:,best].reshape(-1,1)
 
 n = [0] * (k[0])
@@ -23,11 +23,11 @@ n = [0] * (k[0])
 for j in range(k[0]):
     n[j] = len(clst[clst[:,0] == j,0])
 
-ma = G.FS(zscr[:,1], clst[:,0])
+ma = astro_helpers.FS(zscr[:,1], clst[:,0])
 
 ya = N.arange(0.5-(float(k[0])/2),(float(k[0])/2),1)
 
-fig, ax = MP.subplots()
+fig, ax = matplotlib.pyplot.subplots()
 
 for j in range(k[0]):
     ax.text(0, ya[j], '$%i$' % (n[ma[j]]), ha = 'center', va = 'center', bbox = dict(facecolor = 'w', edgecolor = 'k', boxstyle = 'round,pad=0.5'))
@@ -36,17 +36,17 @@ ax.text(0, ya[j] + 0.75, '$k = %i$' % k[0], ha = 'center', va = 'center')
 
 for i in range(1,len(k)):
 
-    lbls = N.genfromtxt('../../Data/Clustering2/' + feat_set + '_tlz_lbls_k%i.txt' % k[i], delimiter = ',')
-    phi = N.genfromtxt('../../Data/Clustering2/' + feat_set + '_tlz_staco.txt', delimiter = ',')[:,1:]
+    lbls = numpy.genfromtxt('../../Data/Clustering2/' + feat_set + '_tlz_lbls_k%i.txt' % k[i], delimiter = ',')
+    phi = numpy.genfromtxt('../../Data/Clustering2/' + feat_set + '_tlz_staco.txt', delimiter = ',')[:,1:]
     phi = phi[phi[:,1] == k[i],:]
     
-    best = N.where(phi[:,0] == min(phi[:,0]))[0][0]
-    clst = N.hstack((clst,lbls[:,best].reshape(-1,1)))
+    best = numpy.where(phi[:,0] == min(phi[:,0]))[0][0]
+    clst = numpy.hstack((clst,lbls[:,best].reshape(-1,1)))
 
-    yb = N.arange(0.5-(float(k[i])/2),(float(k[i])/2),1)
-    mb = G.FS(zscr[:,2], clst[:,i])
+    yb = numpy.arange(0.5-(float(k[i])/2),(float(k[i])/2),1)
+    mb = astro_helpers.FS(zscr[:,2], clst[:,i])
 
-    coma = SM.confusion_matrix(clst[:,i-1],clst[:,i])
+    coma = sklearn.metrics.confusion_matrix(clst[:,i-1],clst[:,i])
     coma = coma[:(k[i-1]), :(k[i])]
     coma = coma[[x for x in ma],:]
     coma = coma[:,[x for x in mb]]

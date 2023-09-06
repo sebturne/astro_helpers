@@ -1,27 +1,27 @@
-import gama_functions as G
-import numpy as N
-import numpy.random as NR
-import matplotlib as M
-M.use('Agg')
-import matplotlib.pyplot as MP
-import sklearn.neighbors.kde as SNK
-import sklearn.grid_search as SG
+import astro_helpers
+import numpy
+import numpy.random
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot
+import sklearn.neighbors.kde
+import sklearn.grid_search
 
-MP.rcParams.update({'figure.figsize':[8,8], 'figure.dpi': 300, 'font.family': 'Times New Roman', 'font.size': 10, 'text.usetex': True})
+matplotlib.pyplot.rcParams.update({'figure.figsize':[8,8], 'figure.dpi': 300, 'font.family': 'Times New Roman', 'font.size': 10, 'text.usetex': True})
 
 #########
 # setup #
 #########
 
-data = N.genfromtxt('data.txt', delimiter = ',') # replace 'data.txt' with your data
-clst = N.genfromtxt('labels.txt', delimiter = ',') # replace 'labels.txt' with your labels
+data = numpy.genfromtxt('data.txt', delimiter = ',') # replace 'data.txt' with your data
+clst = numpy.genfromtxt('labels.txt', delimiter = ',') # replace 'labels.txt' with your labels
 
 # clst MUST have shape (xxx, 1), where xxx is the sample size, for this code to work
 # use print(clst.shape) to see what shape it has
 # if clst just reads in with shape (xxx,), then use clst = clst.reshape(-1,1) to fix it
 
-d = N.shape(data)[1] # number of features (measured from number of columns in data)
-k = N.unique(clst).shape[0] # number of clusters (measured from clst), haven't tested this fully so if it doesn't work just set it manually
+d = numpy.shape(data)[1] # number of features (measured from number of columns in data)
+k = numpy.unique(clst).shape[0] # number of clusters (measured from clst), haven't tested this fully so if it doesn't work just set it manually
 
 lbls = ['$\log_{10}(M_{*}/$M$_{\odot}$', '', '', '', ''] # axis labels, fill these out with your own labels, add more if needed, one example included here
 lims = [[9.5, 12.0], [,], [,], [,], [,]] # axis limits, as above
@@ -35,38 +35,38 @@ tiks = [[9.5,10.0,10.5,11.0,11.5], [,], [,], [,], [,]] # axis ticks, as above
 col = ['#3366aa', '#9370db', '#66aa55', '#ee7722', '#ee3333'] # cluster colours, hex codes
 cnm = ['G' + str(i) for i in range(1,k+1)] # cluster names, i.e. ['G1', G2', ...]
 
-leg = [M.patches.Patch(color = col[i], label = cnm[i]) for i in range(k)] # legend, based on colours and cluster names
+leg = [matplotlib.patches.Patch(color = col[i], label = cnm[i]) for i in range(k)] # legend, based on colours and cluster names
 
 ############
 # plotting #
 ############
 
-fig = MP.figure() # setting up figure
+fig = matplotlib.pyplot.figure() # setting up figure
 
 for c in range(d): # columns
     for r in range(d): # rows
         if c <  r: # setting up tiles for scatter/contour plots
-            ax = MP.subplot2grid((d,d), (r,c)) # setting up axes
+            ax = matplotlib.pyplot.subplot2grid((d,d), (r,c)) # setting up axes
             ax.set(xlabel = lbls[c], ylabel = lbls[r], xlim = (lims[c][0], lims[c][1]), ylim = (lims[r][0], lims[r][1]), xticks = tiks[c], yticks = tiks[r])
             
             ax.scatter(data[:,c], data[:,r], s = 0.3, c = '#000000', linewidths = 0) # plotting data as scatter points in background
 
-            kde = N.zeros((25,25,k)) # setting up stack of kernel density estimates for k clusters
+            kde = numpy.zeros((25,25,k)) # setting up stack of kernel density estimates for k clusters
 
-            x,y = N.mgrid[N.min(data[:,c]):N.max(data[:,c]):25j, N.min(data[:,r]):N.max(data[:,r]):25j]
-            grd = N.vstack([x.ravel(), y.ravel()]).T
-            src = SG.GridSearchCV(SNK.KernelDensity(kernel = 'gaussian'), {'bandwidth': N.logspace(-2, 0, 6)}, cv = 5) # setting up grid search for best fitting kde
+            x,y = numpy.mgrid[numpy.min(data[:,c]):numpy.max(data[:,c]):25j, numpy.min(data[:,r]):numpy.max(data[:,r]):25j]
+            grd = numpy.vstack([x.ravel(), y.ravel()]).T
+            src = sklearn.grid_search.GridSearchCV(sklearn.neighbors.kde.KernelDensity(kernel = 'gaussian'), {'bandwidth': numpy.logspace(-2, 0, 6)}, cv = 5) # setting up grid search for best fitting kde
             
             for i in range(k): # calculating kde for each cluster
                 src.fit(data[clst[:,0] == i][:,[c,r]]) # searching
 
                 knl = src.best_estimator_ # selecting best fitting kde
-                knl = N.exp(knl.score_samples(grd)) # best fitting kde in linear units
-                knl = knl / N.amax(knl, axis = 0) # normalising best fitting kde to max of 1
+                knl = numpy.exp(knl.score_samples(grd)) # best fitting kde in linear units
+                knl = knl / numpy.amax(knl, axis = 0) # normalising best fitting kde to max of 1
                 kde[:,:,i] = knl.reshape(25,25) # adding to stack
 
             for i in range(k): # plotting clusters
-                cx, cy = N.mean(data[clst[:,0] == i][:,c], data[clst[:,0] == i][:,r]) # cluster centroid
+                cx, cy = numpy.mean(data[clst[:,0] == i][:,c], data[clst[:,0] == i][:,r]) # cluster centroid
                 ax.contour(x, y, kde[:,:,i], [0.25], colors = '#ffffff', linewidths = 2.5, zorder = 3) # plotting contour in white, to make it stand out
                 ax.contour(x, y, kde[:,:,i], [0.25], colors = col[i], linewidths = 1.75, zorder = 3) # plotting contour in colour
                 ax.scatter(cx, cy, s = 25, c = col[i], edgecolor = '#ffffff', lw = 0.375, zorder = 4) # plotting cluster centroid
@@ -77,7 +77,7 @@ for c in range(d): # columns
                 ax.axes.get_xaxis().set_visible(False)
 
         if c == r: # setting up tiles for histograms
-            ax = MP.subplot2grid((d,d), (r,c)) # setting up axes
+            ax = matplotlib.subplot2grid((d,d), (r,c)) # setting up axes
             ax.set(xlabel = feat_lbl[c], xlim = (feat_lim[c][0], feat_lim[c][1]), xticks = feat_tix[c])
             for i in range(k): # plotting histograms
                 ax.hist(data[clst[:,0] == i][:,c], bins = 'fd', histtype = 'step', color = '#ffffff', lw = 2.0) # in white, to make histogram stand out
@@ -87,7 +87,7 @@ for c in range(d): # columns
                 ax.axes.get_xaxis().set_visible(False)
 
         if c == d-1 and r == 0: # setting up tile for legend
-            ax = MP.subplot2grid((d,d), (r,c)) # setting up axes
+            ax = matplotlib.pyplot.subplot2grid((d,d), (r,c)) # setting up axes
             ax.legend(handles = leg, loc = 'upper center', fontsize = 10, frameon = True, facecolor = '#ffffff', edgecolor = '#000000', framealpha = 1.0, fancybox = True, borderpad = 0.5) # adding legend
             ax.axes.get_yaxis().set_visible(False) # removing y axis
             ax.axes.get_xaxis().set_visible(False) # removing x axis
